@@ -136,10 +136,10 @@ public class Calculadora implements ActionListener {
     }
 
     public void editarCampoDigitos() {
-        campoDigitos.setFont(new Font("Arial", Font.PLAIN, 40));
+        campoDigitos.setFont(new Font("Arial", Font.PLAIN, 30));
         campoDigitos.setBackground(new Color(0x2b2c30));
         campoDigitos.setForeground(new Color(0xdce0e6));
-        campoDigitos.setCaretColor(new Color(0xdce0e6));
+        campoDigitos.setEditable(false);
     }
 
     public void editarBotoes() {
@@ -313,26 +313,11 @@ public class Calculadora implements ActionListener {
         valorTotalCampoDigitos = equacaoLista.get(0);
     }
 
-    public void checarEquacao() throws Exception {
-        if (valorTotalCampoDigitos.isEmpty()) {
-            throw new Exception();
-        }
-
-
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == botaoPonto) {
-            if (!campoDigitos.getText().contains(".")) {
-                if (campoDigitos.getText().length() == 0) {
-                    campoDigitos.setText("0.");
-                    valorTotalCampoDigitos += "0.";
-                } else {
-                    campoDigitos.setText(valorTotalCampoDigitos + ".");
-                    valorTotalCampoDigitos += ".";
-                }
-            }
+            campoDigitos.setText(valorTotalCampoDigitos + ".");
+            valorTotalCampoDigitos += ".";
 
         } else if (e.getSource() == botaoApagar) {
             campoDigitos.setText("");
@@ -340,17 +325,18 @@ public class Calculadora implements ActionListener {
             valorTotalCalculado = 0;
 
         } else if (e.getSource() == botaoIgual) {
-            valorTotalCampoDigitos = campoDigitos.getText();
-            calcula();
-            campoDigitos.setText(valorTotalCampoDigitos);
+            try {
+                calcula();
+                campoDigitos.setText(valorTotalCampoDigitos);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Expressão mal formada"
+                                                ,"",JOptionPane.WARNING_MESSAGE);
+            }
         } else {
             JButton botao = (JButton) e.getSource();
             campoDigitos.setText(valorTotalCampoDigitos + botao.getText());
             valorTotalCampoDigitos += botao.getText();
         }
-
-        System.out.println(valorTotalCampoDigitos);
-        System.out.println(valorTotalCalculado);
     }
 
     public static void main(String[] args) {
