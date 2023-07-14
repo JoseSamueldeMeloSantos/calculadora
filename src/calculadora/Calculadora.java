@@ -139,14 +139,12 @@ public class Calculadora implements ActionListener {
         campoDigitos.setFont(new Font("Arial", Font.PLAIN, 40));
         campoDigitos.setBackground(new Color(0x2b2c30));
         campoDigitos.setForeground(new Color(0xdce0e6));
-        campoDigitos.setCaretColor(new Color(0x2b2c30));
-        campoDigitos.setEditable(false);
+        campoDigitos.setCaretColor(new Color(0xdce0e6));
     }
 
     public void editarBotoes() {
         Color corBotao = new Color(0x453745);
-        Color corBotaoEspecial1 = new Color(0xff1457);
-//        Color corBotaoEspecial2 = new Color(0x613c4c);
+        Color corBotaoEspecial = new Color(0xff1457);
         Color corDigitoBotao = new Color(0xdce0e6);
 
         botao0.setBackground(corBotao);
@@ -213,7 +211,7 @@ public class Calculadora implements ActionListener {
         botaoPotencia.setForeground(corDigitoBotao);
         botaoPotencia.setFocusable(false);
 
-        botaoIgual.setBackground(corBotaoEspecial1);
+        botaoIgual.setBackground(corBotaoEspecial);
         botaoIgual.setForeground(corDigitoBotao);
         botaoIgual.setFocusable(false);
         botaoIgual.setFont(new Font("Arial", Font.PLAIN, 22));
@@ -224,10 +222,18 @@ public class Calculadora implements ActionListener {
     }
 
     public List<String> retornarListaEquacao() {
-        String novaEquaçãoString = valorTotalCampoDigitos.replace("+", "§+§").replace(("-"), "§-§")
-                .replace("*", "§*§").replace("/", "§/§").replace("^", "§^§");
+        String novaEquacaoString;
+        if(valorTotalCampoDigitos.charAt(0) == '-'
+            || valorTotalCampoDigitos.charAt(0) == '+'){
+        novaEquacaoString = valorTotalCampoDigitos.charAt(0) + valorTotalCampoDigitos.substring(1)
+                        .replace("+", "§+§").replace(("-"), "§-§").replace("*", "§*§")
+                        .replace("/", "§/§").replace("^", "§^§");
+        } else {
+            novaEquacaoString = valorTotalCampoDigitos.replace("+", "§+§").replace(("-"), "§-§")
+                    .replace("*", "§*§").replace("/", "§/§").replace("^", "§^§");
+        }
 
-        String[] equacaoArray = novaEquaçãoString.split("§");
+        String[] equacaoArray = novaEquacaoString.split("§");
         List<String> listaEquação = new ArrayList<>();
         for (String valor: equacaoArray) {
             listaEquação.add(valor);
@@ -307,6 +313,14 @@ public class Calculadora implements ActionListener {
         valorTotalCampoDigitos = equacaoLista.get(0);
     }
 
+    public void checarEquacao() throws Exception {
+        if (valorTotalCampoDigitos.isEmpty()) {
+            throw new Exception();
+        }
+
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == botaoPonto) {
@@ -326,6 +340,7 @@ public class Calculadora implements ActionListener {
             valorTotalCalculado = 0;
 
         } else if (e.getSource() == botaoIgual) {
+            valorTotalCampoDigitos = campoDigitos.getText();
             calcula();
             campoDigitos.setText(valorTotalCampoDigitos);
         } else {
